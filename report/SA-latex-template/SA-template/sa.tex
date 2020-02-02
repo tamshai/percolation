@@ -1,0 +1,73 @@
+%
+% tested with pdflatex (direct dvi -> pdf)
+%
+\documentclass[12pt,a4paper]{article}
+%
+%%%%% MAIN DEFINITIONS START - MODIFY AS NECESSARY
+
+%%% Select the language (default English):
+\def\mylang{e} % English
+%\def\mylang{f} % Finnish
+%\def\mylang{s} % Swedish
+
+\newcommand{\mycourse}{PHYS-E0441 --- Physics Special Assignment V}
+\newcommand{\mytitle}{Title of the Work}
+\newcommand{\mypagenum}{iv+20+IV}
+\newcommand{\mylanguage}{English}
+\newcommand{\mypubdate}{August 20, 2017}
+\newcommand{\mykeywords}{{selection} {importance} {minority}}
+
+\newcommand{\myauthor}{Teemu Teekkari}
+\newcommand{\mydegreeprog}{Engineering Physics and Mathematics}
+\newcommand{\mymajor}{Engineering Physics}
+\newcommand{\mymajorcode}{SCI3056}
+\newcommand{\mysupervisor}{Professor Pekka Professori}
+\newcommand{\myinstructor}{Olli Ohjaaja, M.Sc.} % can be a list
+
+%%%%% MAIN DEFINITIONS END
+%
+\input{packages}
+\input{commands}
+%
+\begin{document}
+%
+\if\mylang f
+\selectlanguage{finnish}
+\fi
+\if\mylang s
+\selectlanguage{swedish}
+\fi
+%
+\pagenumbering{roman}
+\input{cover}
+\clearpage
+\setcounter{page}{2}
+\thispagestyle{empty}
+\input{abstract}
+\clearpage
+\input{tableofcontents}
+\clearpage
+%
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\input{main}
+%
+\clearpage
+%\nocite{*}
+\addcontentsline{toc}{section}{\numberline{}References}
+
+%%%%% If using BiBTeX, use the following two lines
+\bibliographystyle{ieeetr}%unsrt
+\bibliography{references}
+%%%%% else if using \begin{thebibliography}{9}, use the following line
+%\input{bibliography}
+%%%%% endif
+%
+\clearpage
+\appendix
+\pagenumbering{Roman}
+\setcounter{page}{1}
+%
+\input{appendixA}
+%
+\end{document}

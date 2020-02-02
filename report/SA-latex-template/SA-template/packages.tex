@@ -1,0 +1,108 @@
+% package loadings
+
+%\usepackage[finnish]{babel}         % set language to Finnish
+%\usepackage{icomma}                 % intelligent comma for finnish language decimal separator
+\usepackage[finnish,swedish,english]{babel} % set languages, start with English
+\usepackage[utf8]{inputenc}          % input encoding to utf8
+\usepackage[T1]{fontenc}             % fonts for umlauts
+\usepackage{textcomp}                % highly recommend by psnfss2e.pdf
+\usepackage{graphicx}                % the standard graphics package
+\usepackage{siunitx}                 % provides the \SI{}{} -command.
+\usepackage{url}                     % provides the badly needed \url{} -command
+\usepackage[a4paper]{geometry}       % set the output page size
+\usepackage{amsmath}                 % provides richer amount of mathematical symbols. [intlimits] -option makes integral limits as in blackboards.
+\usepackage{amsfonts}                % provides richer amount of mathematical fonts
+\usepackage{cite}                    % sorts citations like [30, 1, 31, 32, 3] into [1, 3, 30-32].
+%\usepackage{fancyhdr}                % for fancy headers
+%\usepackage{flafter}                % makes all floats not to be placed in the before their declaration.
+\usepackage[small]{caption}          % caption text fine tuning
+%\usepackage{array}                  % provides more tabular options
+\usepackage{rotating}                % provides the \sidewaystable{} -command and other rotations
+\usepackage[version=3]{mhchem}       % provides nuclide and other related commands (\ce)
+\usepackage{tikz}                    % provides correctly working circled letters and other plotting commands
+\usepackage{subfigure}               % provides the \subfigure -command, is actually obsolute so consider using ctable figures.
+\usepackage{ae}                      % some font thingies
+\usepackage{ctable}                  % fine tuned tables, http://www.ctan.org/tex-archive/macros/latex/contrib/ctable/
+\usepackage{multirow}                % spanning multiple rows in tables
+\usepackage{verbatim}                % comments'
+\usepackage{printlen}                % to print lengths of some things
+\usepackage[normalem]{ulem}          % for \s[trike]out command to be used with DONE -command.
+\usepackage{hyperref}                % yet another package. [import as the last one to avoid collisions with redefinitions]
+\usepackage[dmyyyy]{datetime}        % alternative \today output.
+\usepackage{dcolumn}                 % tabular columns alignment, e.g., along the decimal point
+
+% hyperref
+\hypersetup{
+colorlinks = {true}, % color or boxlinks --- keep it true.
+linkcolor = {black},
+anchorcolor = {black},
+citecolor = {black},
+menucolor = {black},
+filecolor = {black},
+urlcolor = {blue},
+runcolor = {black},
+linkbordercolor = {black},
+citebordercolor = {black},
+urlbordercolor = {black},
+menubordercolor = {black},
+filebordercolor = {black},
+runbordercolor = {black},
+linktoc = {all},
+pdftitle = {\mytitle},
+pdfpagelayout = {SinglePage},
+pdfauthor = {\myauthor},
+pdfkeywords = \mykeywords,
+pdfstartview = {Fit},
+unicode = {true},
+}
+\def\sectionautorefname{Section}
+\def\appendixautorefname{App.}
+
+
+% tikz
+\usetikzlibrary{%
+  arrows,shapes,positioning,chains,scopes,shadows,topaths%
+  %shadings,%
+  %calc,%
+  %fit%,%
+  %patterns,%
+  %plotmarks,%
+  %positioning,%
+  %shapes.geometric,%
+  %shapes.misc,%
+  %shapes.symbols,%
+  %shapes.arrows,%
+  %shapes.callouts,%
+  %shapes.multipart,%
+  %shapes.gates.logic.US,%
+  %shapes.gates.logic.IEC,%
+  %er,%
+  %automata,%
+  %backgrounds,%
+  %chains,%
+  %trees,%
+  %petri,%
+  %mindmap,%
+  %matrix,%
+  %calendar,%
+  %folding,%
+  %fadings,%
+  %through,%
+  %scopes,%
+  %decorations.fractals,%
+  %decorations.shapes,%
+  %decorations.text,%
+  %decorations.pathmorphing,%
+  %decorations.pathreplacing,%
+  %decorations.footprints,%
+  %decorations.markings,%
+} 
+
+% datetime
+\renewcommand{\dateseparator}{.}
+
+% make the text height about 2 cm larger than default
+\setlength{\textheight}{45\baselineskip}
+
+% tabular columns alignment along the decimal point
+\newcolumntype{d}[1]{D{.}{.}{#1}}

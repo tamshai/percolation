@@ -1,0 +1,898 @@
+\section{Introduction}
+
+The composition of nuclear fuel changes during its life. After fabrication a fuel assembly is used to produce heat in a reactor for several years. When no more energy can extracted from the assembly, it is moved to an intermediate storage as spent fuel. In an open fuel cycle the assembly is finally disposed to long term spent fuel storage after cooling down in the intermediate storage.
+
+Calculating changes in the fuel composition is called burnup calculation. %Input for burnup calculations are initial nuclide concentrations and effective decay constants, which may change over time. Output is nuclide concentrations in some later time.
+Accurate burnup calculations provide accurate nuclide concentrations even for nuclides with low concentrations. Some of these minority nuclides can be important in applications because of their large effects per nuclide. 
+%However, the effect of nuclide species is always their amount times effect per nuclide.
+
+However, nuclides can cause large effects to certain quantities, but small effects to others. Different quantities are important in different applications. Thus importance\footnote{In this work, importance does not refer to neutron importance nor to adjoint flux.} of a nuclide is application specific.
+
+%Important nuclides can be found by looking at each nuclide separately and assessing their impact during the fuel lifetime. %This approach, however, requires a lot of work and loses the big picture quite easily. 
+
+%It is application specific which nuclides are important. However, the nuclides may be ordered by their importance. It is then left to practitioner to judge how many, if any, of the nuclides in the list are important. After sorting the nuclides one can evaluate the nuclides within the list and not (semi)randomly.
+
+The objective of this work is to identify suitable criteria to determine which nuclides are important for applications in
+\begin{itemize}
+	\item reactor performance
+	\item radioactive waste storage
+	\item proliferation resistance
+\end{itemize}
+in a given set of nuclides. Calculation of such a set, including the time in a reactor and spent fuel decay, is left as a separate problem, i.e., burnup calculation and the impact of the nuclides are separated. It is also essential to note that the aim is to identify important nuclides of the set. How those nuclides came to the set is a sub problem of burnup calculation.
+
+%Important nuclides for reactor performance and spent fuel are different, because different aspects are important for in reactor fuel and stored fuel; proliferation resistance is important at all times.
+
+If uncertainty information is available, then the formalism can be applied to uncertainties, yielding the nuclides which are important in the sense that they cause the most uncertainty in quantities of interest.
+
+In \autoref{sect:theory} the concept of importance of nuclides is defined. The definition can not be uniquely generalized to non-linear effects. \autoref{sect:quantities} lists possible quantities of interest, which may be used in the three applications considered in \autoref{sect:applications}. Neither the list of quantities of interest nor the list of applications is complete. In \autoref{sect:example} an example calculation in one application is presented. While the calculation is performed by hand, it should be automated to identify important nuclides during fuel lifetime. Finally \autoref{sect:summary} summarizes the work.
+
+
+
+
+
+\section{Theory}
+\label{sect:theory}
+
+\subsection{Important minority nuclides}
+
+Whether a nuclide is considered important or not is a Boolean property: a nuclide either is important or not. However, it is usually non-trivial to separate important nuclides from unimportant ones. It is much easier to identify which nuclides are more important than others: nuclides can be ordered according to their importance. If a nuclide with some importance is not considered important, then all nuclides with lower importance are not important either.
+
+The same applies to minorityness\footnote{To the author's knowledge there is no better word for this.} of a nuclide. Minorityness is actually unimportance of amount of a nuclide in the total nuclide amount.
+
+An important minority nuclide is important and belongs to minority.
+
+\subsection{Importance}
+
+%Take a set of nuclides and consider a quantity we are interested in. Now
+%\begin{itemize}
+%%\item an ``important nuclide'' is taken to be a nuclide which contributes significantly to the quantity of interest. More precisely, ``importance of a nuclide'' is the more important  nuclide that contributes more per nuclide than an average nuclide of the set.
+%\item ``importance of a nuclide'' is taken to be the contribution of a nuclide to a quantity of interest. 
+%\end{itemize}
+
+Let $x\in\mathbb{R}$ denote a quantity of interest and $N\in\mathbb{R}^n$ denote a set containing nuclide amounts\footnote{Although $N\in\mathbb{N}^n$ would be more suitable as number of nuclides, it is more practical to consider negative or even irrational amounts of nuclides.}. The total effect of the nuclide amounts to the quantity of interest is mapped by a function $f:\mathbb{R}^n\to\mathbb{R}$, where $x=f(N)$. The effect function $f$ is specific to the quantity of interest.
+
+In practise, the set of nuclide amounts can be represented as a (column) vector $\matvec{N}\in\mathbb{R}^n$. In most applications the effect function $f$ is linear. Then the quantity of interest can be expressed as an inner product:
+%
+\begin{gather}
+f(\matvec{N}) = \langle \matvec{f}, \matvec{N} \rangle = \matvec{f}^\transpose\matvec{N},
+\label{eq:total effect}
+\end{gather}
+%
+where it has been identified that in practise the function $f$ can be represented as a (row) vector $\matvec{f}^{\mathrm{T}}\in\mathbb{R}^n$.
+
+With the vector representation, element $N_i$ should contain the amount of the $i$th nuclide and element $f_i$ should contain effect per nuclide of the $i$th nuclide. Then the effect $x_i$ of the $i$th nuclide $N_i$ to the quantity of interest is quite self-evidently
+%
+\begin{gather}
+x_i = f_iN_i.
+\label{eq:effect of a nuclide}
+\end{gather}
+%
+It is important to note that if $f$ were not linear, the effect of the $i$th nuclide would be non-trivial to define.
+
+The effect of the $i$th nuclide lets us define the importance $I_i\in \mathbb{\bar{R}}_{+}$ of nuclide $i$ as absolute value of the effect
+%
+\begin{gather}
+I_i = |x_i|
+\label{eq:importance}
+\end{gather}
+%
+and the relative importance $R_i\in \mathbb{R}[0,1]$ of nuclide $i$ as a proportion of its importance to the total importance
+%
+\begin{gather}
+R_i = \frac{I_i}{I},
+\label{eq:relative importance}
+\end{gather}
+%
+where the total importance $I=\sum_i I_i$ is defined as the sum of all individual importances. Relative importance can be identified as the truth value of fuzzy logic. It should be noted that for non-negative effects the relative importance is just the fraction of total effect.
+
+\subsubsection*{Linear effects}
+
+By gathering equations~\eqref{eq:total effect}--\eqref{eq:relative importance} one obtains a relatively compact formula for the relative importance of the $i$th nuclide when the nuclides cause a linear effect on the quantity of interest:
+%
+\begin{gather}
+R_i = \frac{|f_iN_i|}{\|\matvec{f} \circ \matvec{N}\|_1},
+\label{eq:relative importance for linear effects}
+\end{gather}
+%
+where ``$\circ$'' is entry wise product of the vectors and $\|\cdot\|_1$ is the taxicab norm of a vector. It should be noted that the denominator is not the total effect if there are negative effects.
+
+\subsubsection*{Non-linear effects}
+
+While the total effect, $x=f(\matvec{N})$, can be uniquely defined, the effect $x_i$ of the $i$th nuclide on the quantity of interested is not trivial to generalize from equation~\eqref{eq:effect of a nuclide} to non-linear cases.
+
+The generalization of the effect of the $i$th nuclide should at least 
+%%
+%\begin{enumerate}
+%\item
+be consistent with the linear definition, i.e., reduce to equation~\eqref{eq:effect of a nuclide} for linear $f$s. Consequently the relative importances would reduce to equation~\eqref{eq:relative importance} for linear $f$s. 
+%\item give zero effect for nuclides with zero concentration.
+%\end{enumerate}
+%%
+However, it is not necessary that the effects of all nuclides sum to the total effect.
+
+An obvious generalization is ``the relative change in the total effect, when the amount of the $i$th nuclide is increased by a factor $\alpha\in\mathbb{R}$'', or
+%
+\begin{gather}
+x_i = \frac{f((\matvec{1}+\alpha\matvec{\hat{e}}_i) \circ \matvec{N})-f(\matvec{N})}{\alpha},
+\label{eq:non-linear prototype 5}
+\end{gather}
+%
+where $\matvec{1}$ is a vector whose elements are all ones and $\matvec{\hat{e}}_i$ is the $i$th canonical basis vector. While the definition fulfils the requirement of consistency, the effect of the $i$th nuclide depends on the $\alpha$-factor if $f$ depends non-linearly on the amount of the $i$th nuclide.
+
+At least two meaningful values of $\alpha$ can be identified. Choosing $\alpha$ as a small positive number corresponds to a case where importances of nuclides are measured in a situation where effects of adding small amounts of nuclides are considered. Alternatively, $\alpha=-1$ corresponds to a case where the importances of nuclides are measured when effects of removing a nuclide species is considered.
+
+As there are at least two meaningful definitions to generalize the effect of the $i$th nuclide, one must conclude that the effect of the $i$th nuclide is situation dependent when the effect is non-linear. The generalization of equation~\eqref{eq:effect of a nuclide} is not unique but situation-dependent and needs to be constructed case by case.
+
+% is the effect of the $i$th nuclide when 
+
+%The relative importance can be acquired by combining equations~\eqref{eq:importance},~\eqref{eq:relative importance} and~\eqref{eq:non-linear prototype 3}, yielding
+%%
+%\begin{gather}
+%R_i = \frac{|f(\matvec{e}_i \circ \matvec{N})|}{\sum_i|f(\matvec{e}_i \circ \matvec{N})|}.
+%\end{gather}
+%Note that the $i$ in denominator is a dummy index.
+
+
+%\begin{enumerate}
+%\item 
+%``What if all nuclides but the $i$th would disappear'':
+%%
+%\begin{gather}
+%x_i = f(\matvec{e}_i \circ \matvec{N}),
+%\label{eq:non-linear prototype 3}
+%\end{gather}
+%%
+%where $\matvec{e}_i$ is the $i$th canonical basis vector.
+
+%The relative importance can be acquired by combining equations~\eqref{eq:importance},~\eqref{eq:relative importance} and~\eqref{eq:non-linear prototype 3}, yielding
+%%
+%\begin{gather}
+%R_i = \frac{|f(\matvec{e}_i \circ \matvec{N})|}{\sum_i|f(\matvec{e}_i \circ \matvec{N})|}.
+%\end{gather}
+%Note that the $i$ in denominator is a dummy index.
+
+%\item 
+%``What if the all the $i$th nuclides would disappear'':
+%%
+%\begin{gather}
+%x_i = f(\matvec{N})-f((\matvec{1}-\matvec{e}_i) \circ \matvec{N}),
+%\label{eq:non-linear prototype 1}
+%\end{gather}
+%%
+%where $\matvec{1}$ is a vector whose elements are all ones. Then $(\matvec{1}-\matvec{e}_i) \circ \matvec{N}$ is a vector where amount of the $i$th nuclide is set to zero.
+
+%The relative importance can be acquired by combining equations~\eqref{eq:importance},~\eqref{eq:relative importance} and~\eqref{eq:non-linear prototype 1}, yielding the cumbersome
+%\begin{gather}
+%R_i = \frac{|f(\matvec{N})-f((\matvec{1}-\matvec{e}_i) \circ \matvec{N})|}{\sum_i|f(\matvec{N})-f((\matvec{1}-\matvec{e}_i) \circ \matvec{N})|}.
+%\end{gather}
+%\item 
+%``What if each nuclide has the same effect as the last one inserted'':
+%%
+%\begin{gather}
+%x_i = \frac{\partial f(\matvec{N})}{\partial N_i}N_i.
+%\label{eq:non-linear prototype 2}
+%\end{gather}
+%%
+%The relative importance can be acquired by combining equations~\eqref{eq:importance},~\eqref{eq:relative importance} and~\eqref{eq:non-linear prototype 2}, yielding
+%%
+%\begin{gather}
+%R_i %= \frac{\displaystyle\left|\frac{\partial f(\matvec{N})}{\partial N_i}N_i\right|}{\displaystyle \sum_i\left|\frac{\partial f(\matvec{N})}{\partial N_i}N_i\right|}
+%    = \frac{\displaystyle\left|\partial_{N_i} f(\matvec{N})N_i\right|}{\|\nabla_\matvec{N}f(\matvec{N})\circ \matvec{N}\|_1}.
+%\end{gather}
+%\item 
+%``What if each nuclide has the same effect as the first one inserted'':
+%%
+%\begin{gather}
+%x_i = \frac{\partial f((\matvec{1}-\matvec{e}_i) \circ \matvec{N})}{\partial N_i}N_i.
+%\label{eq:non-linear prototype 4}
+%\end{gather}
+%%
+%The relative importance can be acquired by combining equations~\eqref{eq:importance},~\eqref{eq:relative importance} and~\eqref{eq:non-linear prototype 4}, yielding
+%%
+%\begin{gather}
+%R_i = \frac{\displaystyle\left|\partial_{N_i} f((\matvec{1}-\matvec{e}_i) \circ \matvec{N})N_i\right|}{\|\nabla_\matvec{N}f((\matvec{1}-\matvec{e}_i) \circ \matvec{N})\circ \matvec{N}\|_1}.
+%\end{gather}
+%%
+%%($k_\infty$ example: $x_i$ still non-linear and depends on $N$, not just $N_i$)
+%%(Decay heat example: $x_i$ linear, depends only on $N_i$).
+%%
+%\end{enumerate}
+%%
+
+%%However, the total importance can not be directly gained from $\|\matvec{f} \circ \matvec{N}\|_1$.
+
+
+%The generalizations demonstrate one aspect of the uniqueness problem: 
+
+%What is the effect of the $i$th nuclide. 
+
+%The hard part is that the effect of nuclide changes when the amount of nuclides changes. Effect of the $i$th nuclide can be interpreted as the effect of all the nuclides, i.e., the \emph{amount} of the nuclide 
+
+
+
+%What is the effect of the $i$th nuclide, when it depends on 
+
+%The first generalization corresponds to situation where the objective is to determine if some nuclides could or should be removed. The second generalization is a situation where all nuclides are separated. The third generalization can be useful if uncertainties in nuclide amounts are known and objective is to evaluate which nuclides cause the most uncertainty. Then product $N_i$ --- but not the partial derivative --- in equation~\eqref{eq:non-linear prototype 2} should be replaced by uncertainty $\Delta N_i$ of the $i$th nuclide.
+
+\subsection{Minorityness}
+
+Minorityness can be considered as unimportance of the $i$th nuclide to the total nuclide amount. The effect is clearly linear and should be defined as
+%
+\begin{gather}
+\matvec{f}^\transpose = \matvec{1}^\transpose.
+\end{gather}
+%
+In this case, the importance to nuclide amounts reduces to
+%
+\begin{gather}
+R_i = \frac{|N_i|}{\|\matvec{N}\|_1}.
+\end{gather}
+%
+which can be used to order nuclides according to their non-minorityness.
+
+\subsection{Additional properties}
+
+\subsubsection*{Scaling}
+
+It is easy to show that for linear effects relative importance are constants when nuclide amounts are scaled by an arbitrary real number. As an implication nuclide concentrations $\matvec{C}=\matvec{N}/\|\matvec{N}\|_1$ can be used instead of nuclide amounts. The total effect is, however, lost.
+
+Using the same property nuclide concentrations can be scaled back to original amounts of nuclides, if any linear total effect or importance is known.
+
+\subsubsection*{Effective nuclides}
+
+For some analysis, certain groups of nuclides such as fission products, enriched uranium, actinides or chemically separable elements might be a suitable ``nuclide''. Such groups can be considered as nuclides as long as the effect $f$ can be well defined.
+
+%\subsubsection*{Subset of the set of nuclides}
+
+%In some analysis it is practical to consider only the effect of a subset of the set of nuclides. 
+
+\subsubsection*{Ratios of linear effects}
+
+Several dimensionless quantities of interest are defined as
+%
+\begin{gather}
+x = \frac{\matvec{f}^\transpose\matvec{N}}{\matvec{g}^\transpose\matvec{N}},
+\end{gather}
+%
+i.e., as ratios of linear quantities $\matvec{f}$ and $\matvec{g}$. A related linear quantity,
+%
+\begin{gather}
+\tilde{x} = \matvec{f}^\transpose-\matvec{g}^\transpose\matvec{N} = \matvec{h}^\transpose\matvec{N},
+\end{gather}
+%
+i.e., their difference $\matvec{h}$ is typically a measure of the same property of the system. If so, one should consider using the linear quantity to assess importance of the nuclides to avoid ambiguity of non-linear effects.
+
+It should be stressed that nothing guarantees relative importances of nuclides to be in the same order, when calculated using the ratio or the difference. However, it is hard to image a physical example where the order would be severely violated.
+
+\subsubsection*{Importance of uncertainty of nuclides}
+
+If the amounts of nuclides $\matvec{N}$ are known with some simple uncertainties of the form $\matvec{N}\pm\Delta\matvec{N}$, then a first order approximation of the effect of uncertainty of the $i$th nuclide is analogous to equation~\eqref{eq:non-linear prototype 5} with the zero limit choice as
+%
+\begin{gather}
+x_i = \frac{\partial f(\matvec{N})}{\partial N_i}\Delta N_i + \mathcal{O}(\Delta N_i^2).
+\label{eq:uncertainty effect}
+\end{gather}
+%
+so that
+%
+\begin{gather}
+R_i %= \frac{\displaystyle\left|\frac{\partial f(\matvec{N})}{\partial N_i}N_i\right|}{\displaystyle \sum_i\left|\frac{\partial f(\matvec{N})}{\partial N_i}N_i\right|}
+    = \frac{\displaystyle\left|\partial_{N_i} f(\matvec{N})\Delta N_i\right|}{\|\nabla_\matvec{N}f(\matvec{N})\circ \Delta\matvec{N}\|_1} + \mathcal{O}(\|\Delta \matvec{N}\|_2^2),
+\end{gather}
+%
+where $\|\cdot\|_2$ is the two-norm of a vector. The relative importances are valid as long as the uncertainties are sufficiently small compared to the local linearity of $f$.
+
+
+
+
+
+\section{Quantities of interest}
+\label{sect:quantities}
+
+\subsection{Linear effects}
+
+%Linear effects can be described by specifying the elements for vector $\matvec{f}$ in equation~\eqref{eq:total effect}.
+
+% It should be kept in mind that the elements are multiplied by corresponding nuclide amounts to yield effect.
+
+\subsubsection*{Activity}
+
+The elements of vector $\matvec{f}$ should contain decay constants. Decay constant $\lambda_i$ of the $i$th nuclide affects activity so that
+%
+\begin{gather}
+f_i = \lambda_i.
+\end{gather}
+%
+Decay constants can be gathered manually from Ref.~\cite{nndc} or processed from nuclear data files, for example one of Refs.~\cite{jendl,jeff,cendl,brond,endf}.
+
+\subsubsection*{Breeding rate}
+
+Breeding rate is related to breeding ratio. If breeding rate is negative, it could be called conversion rate. If no connection to conversion ratio is wished, fissile inventory change rate is a good name.
+
+The elements of vector $\matvec{f}$ should contain microscopic breeding cross sections, defined as $\sigma_{b,i}=\sigma_{\textnormal{fissile generation},i}-\sigma_{\textnormal{fissile destruction},i}$ for nuclide $i$. Microscopic breeding cross section of the $i$th nuclide affects breeding rate so that
+%
+\begin{gather}
+f_i = \sigma_{b,i}\phi,
+\end{gather}
+%
+where the flux $\phi$ scales the total effect, but cancels out when relative importances are calculated.
+
+See reaction rates (\autopageref{sect:reaction rates}) for data sources and a brief discussion about choosing correct cross sections.
+
+\subsubsection*{Decay heat generation rate}
+
+The elements of vector $\matvec{f}$ should contain specific decay heat generation rate. Decay constants $\lambda_i$ and energy deposited as heat to surroundings $E_i$ per decay of the $i$th nuclide affects decay heat generation rate so that
+%
+\begin{gather}
+f_i = \lambda_iE_i.
+\end{gather}
+%
+It should be stressed that energy released per decay might be different to energy deposited as heat to surroundings. Typically one should calculate energy released as particles such as $\alpha$ and $\beta$-particles but not neutrinos. It is application specific to which extend energy released as gamma rays should be included.
+
+Decay heat data can be found from nuclear data files~\cite{jendl,jeff,cendl,brond,endf}. However, the format is not the most user friendly.
+
+\subsubsection*{Mass}
+
+The elements of vector $\matvec{f}$ should contain atomic masses. Atomic mass $m_i$ of the $i$th nuclide affects total mass so that
+%
+\begin{gather}
+f_i = m_i.
+\end{gather}
+%
+Atomic masses can be gathered manually from Ref.~\cite{nndc} or processed from nuclear data files, for example one of Refs.~\cite{jendl,jeff,cendl,brond,endf}.
+
+\subsubsection*{Neutron balance rate}
+
+Neutron balance rate is the difference of neutron generation rate and neutron absorption rate. The reactor is critical if neutron balance rate is zero, supercritical if it is positive and subcritical if it is negative. Reactivity is neutron balance rate divided by neutron generation rate.
+
+The elements of vector $\matvec{f}$ should contain microscopic neutron balance cross sections. Microscopic neutron balance cross section $\sigma_{n,i}=\nu\sigma_{f,i}-\sigma_{a,i}$ of the $i$th nuclide affects neutron balance rate so that
+%
+\begin{gather}
+f_i = \sigma_{n,i}\phi,
+\end{gather}
+%
+where the flux $\phi$ scales the effect, but cancels out when relative importances are calculated.
+
+See reaction rates (\autopageref{sect:reaction rates}) for data sources and a brief discussion about choosing correct cross sections.
+
+\subsubsection*{Radiation dose}
+
+In case of eaten or inhaled source the elements of vector $\matvec{f}$ should contain dose conversion factors. Dose conversion factors $h_i$ from activity to dose of the $i$th nuclide and decay constant $\lambda_i$ affects radiation dose so that
+%
+\begin{gather}
+f_i = \lambda_ih_i.
+\end{gather}
+%
+In case of out-of-body source the total dose depends on situation. Distance to the source, exposure time and geometry need to be accounted for in the form of $f$. Exposure time can be omitted if considering radiation dose rate.
+
+In any case, the proper effect function $f$ must be constructed on case-to-case basis to measure radiotoxicity of the nuclides. If a general understanding is required, use of several test cases might be a good idea.
+
+Finnish standards for different age groups and exposure situations can be found from Refs.~\cite{ST72,ST73}. A related ICRP document can be found from Ref.~\cite{ircp30part1}.
+
+%\subsubsection*{Reactivity coefficients}
+
+%Hard to define. Somehow as related to neutron balance? They are basically of the form $\lim_{\matvec{f}\to\matvec{g}}(\matvec{f}^\transpose-\matvec{g}^\transpose)\matvec{N}=0$, (the definition should be so, that the zero doesn't pop out so easily. Here $\matvec{f}$ and $\matvec{g}$ are basically but not exactly neutron balances. However, the exactly $f$ and $g$ are not linear.), although $\matvec{N}$ might change (eq. water density change due to void fraction or temperature). Is not, because $f$ and $gh$ are not linear and $N$ changes also.
+%%
+%\begin{align}
+%\Delta\rho &= \frac{\partial\rho}{\partial X}\Delta X\;\textnormal{and}
+%\\
+%\frac{\partial\rho}{\partial X} 
+%&= \frac{\partial}{\partial X}\frac{\nu\Sigma_{f}-\Sigma_{a}}{\nu\Sigma_{f}}
+%\\
+%&= \frac{\nu\Sigma_{f}\frac{\partial}{\partial X}\left(\nu\Sigma_{f}-\Sigma_{a}\right)-\left(\nu\Sigma_{f}-\Sigma_{a}\right)\frac{\partial}{\partial X}\nu\Sigma_{f}}{\nu\Sigma_{f}^2}
+%\\
+%&= \frac{-\nu\Sigma_{f}\frac{\partial}{\partial X}\Sigma_{a}+\Sigma_{a}\frac{\partial}{\partial X}\nu\Sigma_{f}}{\nu\Sigma_{f}^2}
+%,
+%\end{align}
+%%
+%where $X$ is typically fuel temperature, coolant void fraction or moderator temperature.
+
+%(no sources, must be calculated separately for a situation).
+%(no flux!)
+%(no leakage)
+
+%Perturbation theory estimate:
+%%
+%\begin{gather}
+%\Delta\rho=
+%\end{gather}
+
+%What is the contribution of the $i$th nuclide?
+
+\subsubsection*{Reaction rates}
+\label{sect:reaction rates}
+
+The elements of vector $\matvec{f}$ should contain effective microscopic reaction cross sections. Effective microscopic reaction cross sections $\sigma_{x,i}$ of the $i$th nuclide and local flux level $\phi$ affects reaction rate so that
+%
+\begin{gather}
+f_i = \sigma_{x,i}\phi.
+\end{gather}
+%
+Note that the flux level has no effect on relative importance, but only on the total effect and the total importance.
+
+%\pagebreak
+Possible reaction rates to consider are
+\begin{itemize}\setlength{\itemsep}{-1mm}
+	\item fission rate
+	\item absorption rate
+	\item neutron production rate
+	\item energy production rate
+\end{itemize}
+
+Cross section like quantities can be used in place of the effective cross section. Some fairly self-evident are
+\begin{itemize}\setlength{\itemsep}{-1mm}
+	\item moderating power
+	\item radiation damage
+	\item nuclear heating
+	\item fission product poisoning\footnote{Measured as effective absorption rate of fission products.}
+\end{itemize}
+Breeding rate and neutron balance rate have been explicitly presented as examples.
+
+Omitting any spatial dependences the choice of correct effective microscopic reaction cross section depends on the neutron spectrum so that
+%
+\begin{gather}
+\sigma_{x,i} = \frac{\int_E\sigma_{x,i}(E)\phi(E)dE}{\int_E\phi(E)dE}.
+\end{gather}
+%
+In a typical case the exact neutron spectrum is not available. Qualitative results may be obtained for thermal and fast reactors by using a thermal Maxwellian spectrum or fission spectrum as weight. Some such effective cross sections are available from Ref.~\cite{nndc}. Arbitrary spectra can be used to generate effective cross sections if nuclear data file~\cite{jendl,jeff,cendl,brond,endf} processing is available.
+
+\subsubsection*{Spontaneous fission rate}
+
+The elements of vector $\matvec{f}$ should contain specific spontaneous fission rates. Decay constants $\lambda_i$ and spontaneous fission branch $b_i$ of the $i$th nuclide affects spontaneous fission rate so that
+%
+\begin{gather}
+f_i = \lambda_ib_i.
+\end{gather}
+%
+Decay constants and spontaneous fission branches can be found from nuclear data files~\cite{jendl,jeff,cendl,brond,endf}. However, the format is not the most user friendly.
+
+
+
+\subsection{Non-linear effects}
+
+\subsubsection*{Cost}
+
+Cost to buy ore is typically linear, but costs to enrich fuel and fabricate a fuel assembly are non-linear. In general, costs for reprocessing and final disposal are also non-linear.
+
+On the other hand, separated fission products might be valuable, thus having negative costs: \ce{^{238}_{94}Pu} is used as power source for thermoelectric generators in deep space probes, \ce{^{99}_{42}Mo} is a precursor of \ce{^{99m}_{43}Tc}, which is used in medical imaging. Also other fission products have uses, if separated. The costs for these are linear.~\cite{Sorensen_2010}
+
+The cost to do a situation dependent action on a set of nuclides can be presented as\footnote{Alas, this is the best one can say.}
+%
+\begin{gather}
+x=f(\matvec{N}),
+\end{gather}
+%
+where $f$ is suitable to the situation in hand and must be generated to describe the cost.
+
+
+\subsubsection*{Detectability}%[Identification]
+
+Consider an air or surface sample or in situ facility measurements. The aim is to detect any nuclides that should not be present. If a single nuclide species is detected, the sample will be examined more thoroughly which will lead to either finding a misplaced set of nuclides or noting that the original measurement was incorrect.
+
+For the formalism the question that should be asked is: which nuclides are the most important to remove from the set so that the set of nuclides is not detected. The effect is trivially non-linear and depends on geometry, background radiation and equipment so that
+%
+\begin{gather}
+x = \sum_ig_i(\matvec{N})h_i(\matvec{N}),
+\end{gather}
+%
+where the sum is over gamma lines emitted by the nuclides. $g_i$ is effective detector efficiency for the $i$th gamma line, including background and geometry, and $h_i$ is effective decay constant for the $i$th gamma ray.
+
+Assuming that the detector detects all gammas equally well and it is enough to detect only a single gamma line to identify a nuclide, the effect of the $i$th nuclide can be written as
+%
+\begin{gather}
+f_i = 
+\begin{cases}
+\lambda_ib_i & \textnormal{if $\gamma$ can be identified} \\
+0   & \textnormal{otherwise}
+\end{cases},
+\end{gather}
+%
+where $\lambda_i$ is decay constant of the $i$th nuclide and $b_i$ is the emission probability of the main gamma. Typically a nuclide can be identified if its gammas have energy over~\SI{100}{keV}, under which attenuation and background radiation make detection of gamma lines harder. Main gamma is the gamma which has the largest emission probability for identifiable gammas of the $i$th nuclide. All nuclides occurring naturally in the measuring location can not be detected separately and should be omitted from the set.~\cite{Debertin}
+
+Decay constants can be found for example from Ref.~\cite{nndc}. Emission probabilities, gamma lines and also decay constants can be found for example from Ref.~\cite{table_of_radioactive_isotopes}.
+
+
+
+\subsubsection*{Reactivity coefficients}
+
+A change in reactivity $\Delta \rho$ can be expressed as
+%
+\begin{gather}
+\Delta \rho = \frac{\partial\rho}{\partial X}\Delta X,
+\end{gather}
+%
+where $\partial_X\rho$\footnote{$\partial_X\rho=\frac{\partial\rho}{\partial X}$} is a coefficient of reactivity for change in variable $X$. For LWRs $X$ is typically void fraction, moderator temperature or fuel temperature. For fast reactors, $X$ might be thermal expansion of fuel in radial direction.
+
+Consider a reactor described by a fission operator $\mathcal{F}$ and an absorption operator $\mathcal{A}$. Take a change $\Delta X$, which implies changes $\Delta \mathcal{F}$ and $\Delta \mathcal{A}$\footnote{Omitting any dimensional changes.}. The reactivity change is then
+%
+\begin{gather}
+\Delta\rho = \frac{
+\langle \phi, (\Delta \mathcal{F}-\Delta \mathcal{A})\phi\rangle
+}{
+\langle \phi, \mathcal{F}\phi\rangle
+}
+,
+\end{gather}
+%
+where the brackets indicate integration over neutron phase space.~\cite{Stacey2001}
+
+Dividing the expression by $\Delta X$ and taking limit $\Delta X\to 0$ gives
+%
+\begin{gather}
+\frac{\partial\rho}{\partial X} = \frac{
+\langle \phi, (\partial_X \mathcal{F}-\partial_X \mathcal{A})\phi\rangle
+}{
+\langle \phi, \mathcal{F}\phi\rangle
+}
+,
+\end{gather}
+%
+where the partial derivatives of $\mathcal{F}$ and $\mathcal{A}$ are evaluated at the unperturbed state.
+
+The effect of the $i$th nuclide to reactivity coefficients is non-linear, because the denumerator contains the fission operator, which depends on nuclide concentrations. However, a related quantity
+%
+\begin{gather}
+\frac{\partial\rho}{\partial X}\langle \phi, \mathcal{F}\phi\rangle = \langle \phi, (\frac{\partial\mathcal{F}}{\partial X}-\frac{\partial\mathcal{A}}{\partial X})\phi\rangle
+,
+\end{gather}
+%
+is linear and can be used to detect important nuclides. The non-trivial part is to calculate partial derivatives of the operators. Typically changes occur in the cross sections, but dimensional changes are also possible.
+
+
+
+
+\subsubsection*{Multiplication factor}
+
+Omitting any spatial effects, the total effect of the effective multiplication factor can be written as
+%
+\begin{gather}
+f(\matvec{N}) 
+%= \frac{\int_V\int_E\nu\Sigma_f(\matvec{r},E)\phi(\matvec{r},E)dEdV}{\int_V\int_E\Sigma_a(\matvec{r},E)\phi(\matvec{r},E)dEdV}.
+%= \frac{\int_E\nu\Sigma_f(E)\phi(E)dE}{\int_E\Sigma_a(E)\phi(E)dE}.
+= \frac{\int_E\matvec{\nu\sigma}_f^\transpose(E)\matvec{N}\phi(E)dE}{\int_E\matvec{\sigma}_a^\transpose(E)\matvec{N}\phi(E)dE}.
+\end{gather}
+%
+Properly averaged cross sections yield a representation
+%
+\begin{gather}
+f(\matvec{N}) = \frac{\matvec{\nu\sigma}_f^\transpose\matvec{N}\phi}{\matvec{\sigma}_a^\transpose\matvec{N}\phi},
+\end{gather}
+%
+which is still non-linear. The effect is a dimensionless number calculated as a ratio of linear effects, and the difference can be identified as the neutron balance rate.
+
+It should be noted that the formalism can not include importances, which arise because the flux changes. According to the formalism pure scatterers have a zero importance to multiplication factor, because their effect on effective cross sections is neglected. The effect of scattering species is caught on importances on moderating power.
+
+Reactivity and multiplication factor are different sides of the same effect. Effect to reactivity is left as an exercise.
+
+
+
+%\subsubsection*{Critical mass}
+
+%(to be applied to chemically separated elements. Trivially non-linear. Should be applied to "what if the element is reduced away") or should it?
+
+%Critical mass of a substance, that has a mass is really a boolean. The set of nuclides either is or is not critical. This also depends on geometry.
+
+
+
+
+%\subsubsection*{xxx}
+
+%The elements of vector $\matvec{f}$ should contain xxx. xxx $X_i$ of the $i$th nuclide affects so that
+%%
+%\begin{gather}
+%f_i = X_i.
+%\end{gather}
+%%
+%xxxs can be found for example from source~\cite{xxx}.
+
+%\subsubsection*{xxx}
+
+%The elements of vector $\matvec{f}$ should contain xxx. xxx $X_i$ of the $i$th nuclide affects so that
+%%
+%\begin{gather}
+%f_i = X_i.
+%\end{gather}
+%%
+%xxxs can be found for example from source~\cite{xxx}.
+
+
+
+
+
+\section{Applications}
+\label{sect:applications}
+
+%The "art part". The list of three subjects is not complete.
+
+\subsection{Reactor performance}
+
+Performance of a nuclear reactor can be measured in many ways. Perhaps the main performance criteria is that the reactor needs to be able to operate, that is, remain critical\footnote{Accelerator-driven systems should have large enough neutron multiplication factor.}. A good measure of criticality is the difference in rates at which neutrons are produced and consumed.
+
+Criticality of a reactor is not enough to operate it safely. In all reactors increase in power increases temperature and causes other changes in the reactor. In stable reactors, the changes decrease power. Unstable reactors may be controlled, but need active control measures. Safety of a reactor depends mainly on how fast control measures are needed. Different coefficients of reactivity describe stability on different time scales.
+
+In power reactors the main product is heat generated in fissions, which is used to generate electricity. The generated heat is directly proportional to nuclear heating rate. 
+
+In many research reactors the generated heat is a nuisance and the main product is neutrons from the chain reaction. The neutrons may be used to activate materials or carry out boron neutron capture therapy. Also other uses exists and suitable measures for their performance must be considered case-by-case.
+
+Typically minimal consumption of fuel is economical and ecological. The rate at which fissile inventory changes is a rough measure of this. Changes in fissile inventory can be measured by breeding rate.
+
+Some quantities of interest for reactor performance are listed in \autoref{table:Quantities of interest for reactor performance}. Not all quantities measure directly the desired property, nor the properties cover their area fully.
+
+\ctable[
+label=table:Quantities of interest for reactor performance,
+caption={Quantities of interest for reactor performance.},
+%pos=!tb,
+notespar,
+%figure,
+%botcap
+]{ccc}{%footnotes
+}{%content
+\toprule
+Area        & Property           & Quantity \\
+\midrule
+operability & criticality        & neutron balance \\
+safety      & stability          & reactivity coefficients \\
+economics   & energy production  & nuclear heating rate \\
+economics   & nuclide production & suitable reaction rate \\
+economics   & fissile inventory  & breeding rate \\
+\bottomrule
+}
+
+When identifying important nuclides for reactor performance, the set of nuclides chosen to describe a reactor should typically contain the fuel and moderator. In some cases the contents of the irradiation tube or similar might be the correct choice. 
+
+
+
+\subsection{Radioactive waste storage}
+
+Storage requirements for radioactive waste depend on its properties. IAEA has suggested classification of waste as high, medium or low level waste. Main criteria are specific activity and decay heat generation. Low and medium level waste is further categorized as long or short term waste, depending on activity of long-lived radiation emitters. If the activity drops to acceptable levels within a time that administrative controls are expected to last\footnote{Conservative assumption is a few hundred years.}, the waste is short term waste and can be stored above ground under supervision. Long term waste and high level waste need a disposal mechanism, which does not depend on supervision.~\cite{iaea_safety_series_950}
+
+The Finnish regulatory body classifies radioactive waste by its specific activity. Low activity waste is anything whose specific activity is less than \SI{1}{MBq/kg}, medium activity waste is between \SI{1}{MBq/kg} and \SI{10}{GBq/kg} and high activity waste is anything over \SI{10}{GBq/kg}.~\cite{stuk_jate_matala_keski, stuk_jate_korkea}
+
+Safety of public from negative health effects of radiation is the primary reason for the storage need. Public is safe from radiation of the waste if there is no contact between them. Therefore the objective of storage is to keep the radioactive material where it is stored and the public out of there.
+
+Lines of defence in storage is the fuel itself, its cladding and depending on storage some other barriers. The barriers need to remain leak tight to prevent radioactive material from being released.
+
+Radioactive materials decay and emit radiation which is turns into decay heat. Depending on the level of the heat generation, active cooling might be needed to prevent too high temperatures, which might cause enhanced corrosion, cracks or even melting. The effect of generated heat is mostly determined by decay heat generation rate, but depends also on geometry and applied cooling.
+
+Criticality of spent fuel might be an issue if the fuel is in tightly packed and well moderated geometry. Typically there is some cooling water or other moderators present. Critical systems generate more heat than decay heat, which compromises cooling. Typically spent fuel is at its most critical state when surrounded by water. Therefore as a first approximation, criticality safety can be assessed by neutron balance using a thermal spectrum.
+
+Health effects of any released nuclides depend on their propagation. Typically fallout propagation depends on weather or movement of ground water, wherever the facility is located. If it is assumed that spread of all nuclides of waste is equal, then radiotoxicity of the waste can be used as a measure of possible health effects. More accurate calculations should take movement of nuclides into account.
+
+Some quantities of interest for radioactive waste storage are listed in \autoref{table:Quantities of interest for radioactive waste storage}. Not all quantities measure directly the desired property, nor the properties cover their area fully.
+
+\ctable[
+label=table:Quantities of interest for radioactive waste storage,
+caption={Quantities of interest for radioactive waste storage.},
+%pos=!tb,
+notespar,
+%figure,
+%botcap
+]{ccc}{%footnotes
+}{%content
+\toprule
+Area                 & Property            & Quantity \\
+\midrule
+classification       & activity level      & specific activity \\
+safety               & temperature         & decay heat generation \\
+safety               & criticality         & neutron balance \\
+safety               & health effects      & radiation dose (rate) \\
+\bottomrule
+}
+
+%(While quantities are clear, what is the difference in property and area? [property=the quantity we would like to use?; area=general aim])
+
+When identifying important nuclides for radioactive waste storage, the set of nuclides is the set that will be stored. However, changes in the set of nuclides due to decay must be examined. In case of a release, the nuclides that were released is the correct set to consider.
+
+%\subsubsection*{dump}
+
+%TABLE I. IMPORTANT PROPERTIES OF RADIOACTIVE
+%WASTE USED AS CRITERIA FOR
+%CLASSIFICATION
+%• Origin
+%• Criticality
+%• Radiological properties:
+%— half-life
+%— heat generation
+%— intensity of penetrating radiation
+%— activity and concentration of radionuclides
+%— surface contamination
+%— dose factors of relevant radionuclides
+%• Other physical properties:
+%— physical state (solid, liquid or gaseous)
+%— size and weight
+%— compactability
+%— dispersibility
+%— volatility
+%— solubility, miscibility
+%• Chemical properties:
+%— potential chemical hazard
+%— corrosion resistance/corrosiveness
+%— organic content
+%— combustibility
+%— reactivity
+%— gas generation
+%— sorption of radionuclides
+%• Biological properties:
+%— potential biological hazards
+%~\cite{iaea_safety_series_950}
+
+\subsection{Proliferation resistance}
+
+The non-proliferation treaty forbids non-nuclear weapon states from developing a nuclear weapon, but allow non-nuclear weapon states to use peaceful, civilian, nuclear energy. IAEA tries to enforce this by safeguards action, which basically is a bookkeeping system for declared nuclear materials. A few decades ago it became evident that the system worked so well that it was easier to develop a secondary nuclear program to produce weapons rather than to try acquire nuclear materials from civilian programs. Therefore, a more recent approach is detecting non-declared nuclear materials and programs.
+%\begin{quotation}
+%“Safeguards Objective”
+%The timely detection of diversion of
+%significant quantities of nuclear material
+%from peaceful nuclear activities to the
+%manufacture of nuclear weapons or of other
+%nuclear explosive devices, and deterrence of
+%such diversion by the risk of early detection.
+%IAEA INFCIRC/153 (Corrected), 1972
+%\end{quotation}
+
+Nuclear material is defined as plutonium, except plutonium exceeding isotopic concentration of \SI{80}{\%} in \ce{^{238}_{94}Pu}; \ce{^{233}_{92}U}; uranium enriched in \ce{^{233}_{92}U} or \ce{^{235}_{92}U}, natural uranium except ore or ore residue; anything containing one or more of the foregoing.~\cite{IAEA_glossary} That is, nuclear material is basically any fissile material that can be used, or rather easily made usable, in nuclear weapons. The amount of nuclear materials is measured in effective kilograms, which reflects its strategic value.
+
+The \SI{80}{\%} or more \ce{^{238}_{94}Pu} exception in plutonium is due to its use as a power source. The power is extracted from decay heat, which may degrade, melt or even self-explode any high explosives in implosion devices. Even smaller amounts of non-fissile plutonium isotopes have some of this self-guarding aspect\footnote{Other than \ce{^{238}_{94}Pu} material self-guard is not officially recogniced by IAEA.}. Another self-guarding aspect comes from the spontaneous fission rate of \ce{^{238}_{94}Pu} (and \ce{^{240}_{94}Pu}), which generates a risk of preignition of a nuclear weapon and reduces yield.~\cite{Yoshiki_2011, Forsberg}
+
+A proposed material self-guard aspect is presence of \ce{^{232}_{92}U} in practically all materials containing \ce{^{233}_{92}U}.~\cite{Isotalo2007} \ce{^{232}_{92}U} decays through several steps into \ce{^{208}_{81}Tl}, which emits \SI{2.6}{MeV} gamma radiation. The uranium material can be temporarily cleaned by chemically removing all daughter nuclides. When cleaned, a glove box is enough for handling, when not, a hot cell facility is needed.~\cite{Forsberg_1999} Besides health danger the radiation may destroy electronic devices and if unshielded, is easy to detect.
+
+\ctable[
+label=table:Quantities of interest for proliferation resistance,
+caption={Quantities of interest for proliferation resistance.},
+%pos=!tb,
+notespar,
+%figure,
+%botcap
+]{ccc}{%footnotes
+}{%content
+\toprule
+Area                & Property             & Quantity \\
+\midrule
+classification      & nuclear material     & fissile content \\
+detection           & gamma footprint      & detectability \\
+material self-guard & acute health effects & radiation dose rate \\
+material self-guard & melting risk         & decay heat \\
+material self-guard & preignition risk     & spontaneous fission rate \\
+\bottomrule
+}
+
+When identifying important nuclides for non-proliferation, the set of nuclides should be analysed in chemically separated groups. Typically chemical separability should be assumed, but not isotopic enrichment. If isotopic enrichment is assumed, then all states with enough common rock\footnote{Basically all states except micro states.} containing uranium or access to seas\footnote{Almost all states and some micro states.} could produce nuclear material easily.
+
+
+
+
+\section{Example: spent fuel storage of a high burnup BWR assembly}
+\label{sect:example}
+
+Taisto Laato has calculated nuclide concentrations of a typical \SI{60}{MWd/kgHM} burnup BWR assembly in his B.Sc. thesis~\cite{Laato2011}, utilizing the CASMO code~\cite{casmo4,casmo4e}. He included \num{84} most common nuclides to the list, listing \SI{99.8}{\%} of atoms. The missing nuclides are actinides and fission products, of which \SI{1.42}{\%} are missing. Alas, the missing nuclides are highly radioactive and might be important --- even \ce{^{135}_{54}Xe} concentration is not high enough to make it to the list.
+
+The list contains only nuclides of the fuel, not surrounding coolant nor cladding or other structural materials. The lists is missing all oxygen, even though the fuel is uranium dioxide, which implies that the list contains only the heavy metals of fresh fuel, and a subset of actinides and fission products.
+
+The calculation shown below should be automated and repeated for all nuclide concentrations during spent fuel decay for a broader picture of the subject. The calculation should be considered only as a calculational example.
+
+\subsection{Minorityness}
+
+The list of Ref.~\cite[Appendix B]{Laato2011} is reproduced in \autoref{table:Relative importances of nuclides to nuclide amounts} in~\autoref{sect:appendixA} and expressed in relative importances. As nuclide amounts are non-negative, the total effect\footnote{Considering nuclide amounts, the total effect is total number of nuclides.} equals total importance. The total amount of nuclides has been weighted to represent an assembly containing \SI{180}{kg} of nuclear fuel. The fuel is placed in \num{100} fuel rods, whose fueled height is \SI{368}{cm}. Nominal pellet diameter is \SI{0.8}{cm}.
+
+Clearly \ce{^{238}_{92}U} is not a minority nuclide, but \ce{^{136}_{54}Xe} could be as its relative importance to nuclide amounts is very low. However, one could argue that there is more \ce{^{136}_{54}Xe} than \ce{^{235}_{92}U}, which is an initial fuel material. As the aim is to identify important minority nuclides, there is no harm done including \ce{^{136}_{54}Xe} to minority.
+
+\subsection{Activity}
+
+Importances to specific activities of the nuclides are listed in \autoref{table:Relative importances of nuclides to activity} in~\autoref{sect:appendixA}. Decay constants were manually compiled from Ref.~\cite{nndc}. There are only \num{25} radioactive nuclides present among the \num{84} in the list: the rest are stable.
+
+The total specific activity is \SI{95.7}{TBq/kg}, which classifies the spent fuel as high activity waste. Most of the activity comes from short-lived fission products. A natural limit between important and unimportant nuclides is the limit where the nuclide alone could cause the classification to be high activity waste. In Finnish standards of the specific activity, this corresponds to a relative importance of \SI{1.04e-1}{\%}. Thus, the nuclides listed in the first column of \autoref{table:Relative importances of nuclides to activity} are important to activity.
+
+\subsection{Decay heat}
+
+Importances to specific decay heat generation rates of the nuclides are listed in \autoref{table:Relative importances of nuclides to specific decay heat} in~\autoref{sect:appendixA}. Decay constant data was compiled from Ref.~\cite{endf}, including gamma heating. Alas, no data for \ce{^{128}_{52}Te} and \ce{^{148}_{62}Sm} was found. The tellurium is an extremely long lived nuclide ($T_{1/2}=\SI{2.41E24}{years}$) and the samarium is also long lived ($T_{1/2}=\SI{7.00E15}{years}$)\footnote{The age of the universe is \SI{13.7E9}{years}.}. Their contribution is likely to be very low.
+
+The total specific decay heat generation rate is \SI{6.19}{W/kg}, which is only \SI{0.022}{\%} of the corresponding neutron power. The figure should be near \SI{7}{\%} of neutron power, which demonstrates the importance of the missing \SI{1.42}{\%} of fission products and actinides: their share is \SI{99.7}{\%} of decay heat.
+
+The list is dominated by \ce{^{134}_{55}Cs} and will be dominated for quite long due to its \SI{2.06}{year} half life. Also \ce{^{244}_{96}Cm} and \ce{^{144}_{58}Ce} are clearly important for decay heat generation.
+
+A natural limit between important and unimportant nuclides could be defined as a nuclide that can melt the configuration. However, this is beyond the scope of this work and all nuclides with more than \SI{1}{\%} relative importance are declared important.
+
+\subsection{Neutron balance}
+
+Importances to neutron balance rate of the fuel nuclides are listed in \autoref{table:Relative importances of nuclides to neutron balance rate} in~\autoref{sect:appendixA}. Cross section data (ENDF/B-VII.0) was downloaded from Ref.~\cite{endf} and processed using \njoy~\cite{lanl_njoy}. Processing consisted of Doppler broadening the cross sections to a nominal storage temperature of~\SI{293.61}{\kelvin} and averaging the cross sections over a Maxwellian distribution of the same temperature. Neutron balance cross sections were then calculated from average values.
+
+The total neutron balance rate is $0.12\,\frac{1}{\mathrm{cm}}\,\phi$ for the fuel nuclides. As the neutron balance rate is positive, the system is supercritical. It should be stressed that this only means that the fuel produces more fast neutrons than it consumes thermal neutrons. Some neutrons are absorbed while they are slowing down and even more are absorbed to moderator as neutrons are thermalized. A more thorough study would perform the neutron balance analysis for the whole system, including the cladding and moderator.
+
+As there are both positive and negative contributions to neutron balance, the total importance differs from the total effect. The total importance is $0.34\,\frac{1}{\mathrm{cm}}\,\phi$ for the fuel nuclides. Not surprisingly, the fissile nuclides have a positive effect and the other ones a negative effect.
+
+A natural limit for important nuclides is that all those nuclides are important that are needed to keep the system subcritical. However, in this simplified analysis all nuclides with more than \SI{1}{\%} relative importance are declared important.
+
+\subsection{Radiotoxicity}
+
+Importances to radiotoxicity of the nuclides are listed in \autoref{table:Relative importances of nuclides to radiotoxicity} in~\autoref{sect:appendixA}. The data is compiled manually from Ref.~\cite{ST73} where the digested radiation source for adults was chosen to be a representative case.
+
+The total specific radiotoxicity is \SI{1.05}{MSv/kg}. Naturally the nuclides which can cause a major dose draws a line between important and unimportant nuclides. For this example, a major dose is taken to be that of acute radiation sickness, i.e., \SI{1}{Sv}. This translates to a relative importance of \SI{5.28E-7}{\%}. At this stage the spent fuel is extremely radiotoxic, if digested, and all active\footnote{Except \ce{^{128}_{52}Te} and \ce{^{148}_{62}Sm}.} nuclides except \ce{^{107}_{46}Pd} and \ce{^{147}_{62}Sm} can cause an acute radiation sickness.
+
+\subsection{Important minority nuclides}
+
+Important minority nuclides belong to minority and are important in at least one aspect. For spent fuel storage application, important minority nuclides include \ce{^{143}_{60}Nd} and \ce{^{103}_{45}Rh} and all active nuclides except \ce{^{238}_{92}U}, \ce{^{128}_{52}Te}, \ce{^{148}_{62}Sm}, \ce{^{107}_{46}Pd} and \ce{^{147}_{62}Sm}.
+
+The important minority nuclides are tabulated in \autoref{table:important minority nuclides for a high burnup BWR assembly}. Relative importances are tabulated only if the nuclide was considered important for that quantity. Importance to activity, radiotoxicity and decay heat go mostly hand in hand. This is because each of these properties is basically a result of decay. On the other hand, importance to neutron balance has nothing to do with activity. The few exceptions occur if radioactive decay has little energy or if a nuclide which is radioactive happens to be fissile material or an exceptional neutron absorber.
+
+The long list of important nuclides to radiotoxicity begs to analyze whether radiotoxicity really has a dozen orders of magnitude worth of important nuclides. Perhaps the studied case of digesting radioactive material is not the most representative: a more typical case would be gamma dose when moving the assembly to an intermediate storage. However, by the transfer the assembly has cooled some time and workers keep their distance and use remotely operated machinery. Therefore, the correct set to study would be already a sometime decayed set of nuclides. Then, using a limit of allowed daily intake might yield more realistic results.
+
+\ctable[
+label=table:important minority nuclides for a high burnup BWR assembly,
+caption={Important minority nuclides for a high burnup BWR assembly.$^*$},%\tmark[\foot{1}]\tmark[\foot{2}]
+pos=!tb,
+%notespar,
+%figure,
+%botcap
+]{c|cccc}{%footnotes
+\tnote[\foot{1}]{Important, but non-minority nuclides have been striked over.}
+}{%content
+\toprule
+        & Activity   & Decay heat    & Neutron balance & Radiotoxicity \\
+Nuclide & \multicolumn{4}{c}{relative importance (\%)} \\
+\midrule
+\ce{^{144}_{58}Ce}	 & 	\num{33.49}	 & 	\num{9.15}	 & 		 & 	\num{15.84}	 \\
+\ce{^{106}_{44}Ru}	 & 	\num{29.43}	 & 		 & 		 & 	\num{18.74}	 \\
+\ce{^{134}_{55}Cs}	 & 	\num{14.51}	 & 	\num{61.78}	 & 		 & 	\num{25.08}	 \\
+\ce{^{137}_{55}Cs}	 & 	\num{7.09}	 & 	\num{3.16}	 & 		 & 	\num{8.39}	 \\
+\ce{^{147}_{61}Pm}	 & 	\num{5.21}	 & 		 & 		 & 	\num{1.23E-1}	 \\
+\ce{^{241}_{94}Pu}	 & 	\num{4.65}	 & 		 & 	\num{15.77}	 & 	\num{2.03}	 \\
+\ce{^{90}_{38}Sr}	 & 	\num{4.07}	 & 	\num{1.98}	 & 		 & 	\num{10.38}	 \\
+\ce{^{244}_{96}Cm}	 & 	\num{1.29}	 & 	\num{18.85}	 & 		 & 	\num{14.08}	 \\
+\ce{^{238}_{94}Pu}	 & 	\num{2.18E-1}	 & 	\num{3.02}	 & 	\num{1.07}	 & 	\num{4.56}	 \\
+\ce{^{239}_{94}Pu}	 & 		 & 		 & 	\num{29.39}	 & 	\num{2.14E-1}	 \\
+\ce{^{235}_{92}U}	 & 		 & 		 & 	\num{25.38}	 & 	\num{1.93E-6}	 \\
+\sout{\ce{^{238}_{92}U}}	 & 		 & 		 & 	\sout{\num{10.69}}	 & 	\sout{\num{4.86E-5}}	 \\
+\ce{^{240}_{94}Pu}	 & 		 & 		 & 	\num{4.76}	 & 	\num{5.05E-1}	 \\
+\ce{^{143}_{60}Nd}	 & 		 & 		 & 	\num{2.57}	 & 		 \\
+\ce{^{103}_{45}Rh}	 & 		 & 		 & 	\num{1.24}	 & 		 \\
+\ce{^{243}_{95}Am}	 & 		 & 		 & 		 & 	\num{6.08E-2}	 \\
+\ce{^{242}_{94}Pu}	 & 		 & 		 & 		 & 	\num{4.91E-3}	 \\
+\ce{^{237}_{93}Np}	 & 		 & 		 & 		 & 	\num{1.43E-4}	 \\
+\ce{^{236}_{92}U}	 & 		 & 		 & 		 & 	\num{4.57E-5}	 \\
+\ce{^{99}_{43}Tc}	 & 		 & 		 & 		 & 	\num{4.57E-5}	 \\
+\ce{^{129}_{53}I}	 & 		 & 		 & 		 & 	\num{1.61E-5}	 \\
+\ce{^{93}_{40}Zr}	 & 		 & 		 & 		 & 	\num{1.12E-5}	 \\
+\ce{^{135}_{55}Cs}	 & 		 & 		 & 		 & 	\num{5.57E-6}	 \\
+\ce{^{107}_{46}Pd}	 & 		 & 		 & 		 & 	\num{3.57E-8}	 \\
+\ce{^{147}_{62}Sm}	 & 		 & 		 & 		 & 	\num{4.82E-10}	 \\
+\midrule
+Total                & \SI{95.7}{TBq/kg} & \SI{6.19}{W/kg} & $0.34\,\frac{1}{\mathrm{cm}}\,\phi$ & \SI{1.05}{MSv/kg} \\
+\bottomrule
+}
+
+
+\section{Summary}
+\label{sect:summary}
+
+A formalism to assess which nuclides are important was presented. However, for non-linear effects the formalism can not be generalized because the meaning of important becomes situation dependent. The ambiguity can be avoided by using suitable linear effects as measures of properties for the set of nuclides in hand.
+
+The listed quantities of interest were selected due to fundamentality, because they were needed in the example calculation or because the author had an interest in them. The list is nowhere near complete, but should be complete enough to be a good starting point to find data needed for practical calculations.
+
+The applications considered in this work could only be discussed from a fairly general point of view. More accurate interesting parameters can be selected for more specific applications.
+
+The example given in \autoref{sect:example} is for a single set of nuclides. To find out time development of important nuclides, the formalism should be applied to all data points during the fuel lifetime and consider each application in more detail. A calculation with a time history of fuel nuclides could be a place for future work.
+
+The example illustrates that many active nuclides are important minority nuclides. It also illustrates that not all important nuclides are important to all areas of an application. In the example the list would be much shorter if radiotoxicity of a digested source were not used as a measure. It still remains an art to define correct quantities of interest to measure essential properties of application specific-areas.
+
+The three considered applications were only scratched on the surface. A thorough calculation would consider several typical cases when there is no single quantity which describes a property.
+
+Even when important minority nuclides can be identified there is little, that can be done with the information, except during reprocessing. As reprocessing is not performed for Finnish fuels, there is little reason --- beyond academic interest --- to know which nuclides are the most important for certain applications: it is enough to know the total effect. Perhaps a more suitable area would be to identify which nuclides cause the most uncertainty in results. That information can be used to guide the research to achieve more reliable results.
+
+For foreign cases, like transmutation facility MYRRHA, the identification of important minority nuclides might give a good insight about which nuclides should be transmutated. For reprocessing facilities, it gives an idea which nuclides are the most important to remove with care.
+
+Despite the formalism, the results need to be analyzed using human intelligence. However, using the formalism reduces the number of nuclides that must be analyzed. A clear order of importance can be used to declare several nuclides unimportant, when a single unimportant nuclide is found.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

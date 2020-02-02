@@ -1,0 +1,114 @@
+% newly defined commands
+
+% sensible positions for floats (figures and tables)
+\renewcommand{\floatpagefraction}{0.90}
+\renewcommand{\topfraction}{1.0}
+\renewcommand{\bottomfraction}{1.0}
+\renewcommand{\textfraction}{0.0}
+\setcounter{topnumber}{10}
+\setcounter{bottomnumber}{10}
+\setcounter{totalnumber}{10}
+
+% a set of commonly usable commands
+\newcounter{todono}
+\setcounter{todono}{0}
+\newcommand{\TODO}[1]{\addtocounter{todono}{1}\emph{TODO~\arabic{todono}: #1}}
+\newcommand{\DONE}[1]{\addtocounter{todono}{1}\emph{\sout{TODO~\arabic{todono}: #1}}}
+\newcommand{\note}[1]{\texttt{[ #1 ]}}
+%\newcommand{\comment}[1]{\note{#1}}
+
+% in case arrow -over vectors get ugly
+\renewcommand{\vec}[1]{\mathbf{\bar{#1}}} % symbolic physical vectors
+\newcommand{\unitvec}[1]{\mathbf{\hat{#1}}} % symbolic physical unit vectors
+\newcommand{\matvec}[1]{\mathbf{#1}} % symbolic mathematical vectors
+\newcommand{\mat}[1]{\mathbf{#1}} % symbolic matrixes
+
+% circled text correctly
+\renewcommand*\textcircled[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% k-eff and k-inf
+\newcommand{\keff}[0]{\ensuremath{k_{\textnormal{eff}}}}
+\newcommand{\kinf}[0]{\ensuremath{k_{\infty}}}
+
+% laplace -operator
+\newcommand{\laplace}[0]{\ensuremath{\Delta}}
+
+% programs
+\newcommand{\casmof}[0]{\texttt{CASMO-4}}
+\newcommand{\casmo}[0]{\texttt{CASMO-4E}}
+\newcommand{\cmslink}[0]{\texttt{CMS-LINK}}
+\newcommand{\simulate}[0]{\texttt{SIMULATE-3}}
+\newcommand{\serpent}[0]{\texttt{Serpent}}
+\newcommand{\interpin}[0]{\texttt{INTERPIN}}
+\newcommand{\njoy}[0]{\texttt{NJOY}}
+
+% file types
+\newcommand{\postscript}[0]{\texttt{PostScript}}
+\newcommand{\dtfiv}[0]{\texttt{DTF-IV}}
+\newcommand{\cccciv}[0]{\texttt{CCCC-IV}}
+\newcommand{\matxs}[0]{\texttt{MATXS}}
+\newcommand{\wims}[0]{\texttt{WIMS}}
+
+% other wierdly written names
+\newcommand{\qpanda}[0]{QPANDA}
+
+% organizations
+\newcommand{\iaea}[0]{IAEA}
+
+% things that might be changed later
+%\newcommand{\burnup}[0]{\ensuremath{\textnormal{Bu}}}
+\newcommand{\burnup}[0]{\ensuremath{B}}
+
+% integral substitution
+\DeclareMathOperator*{\subs}{\textnormal{\Huge\bfseries\itshape|}}
+
+% transpose mark
+\newcommand{\transpose}{\mathrm{T}}
+
+% footnote symbols for tables
+\newcounter{fnc}
+\newcommand{\foot}[1]{\setcounter{fnc}{#1}\ensuremath{\fnsymbol{fnc}}}
+
+% modules
+\newcommand{\reconr}[0]{\texttt{RECONR}}
+\newcommand{\broadr}[0]{\texttt{BROADR}}
+\newcommand{\unresr}[0]{\texttt{UNRESR}}
+\newcommand{\heatr}[0]{\texttt{HEATR}}
+\newcommand{\thermr}[0]{\texttt{THERMR}}
+\newcommand{\groupr}[0]{\texttt{GROUPR}}
+\newcommand{\gaminr}[0]{\texttt{GAMINR}}
+\newcommand{\errorr}[0]{\texttt{ERRORR}}
+\newcommand{\covr}[0]{\texttt{COVR}}
+\newcommand{\moder}[0]{\texttt{MODER}}
+\newcommand{\dtfr}[0]{\texttt{DTFR}}
+\newcommand{\ccccr}[0]{\texttt{CCCCR}}
+\newcommand{\matxsr}[0]{\texttt{MATXSR}}
+\newcommand{\resxsr}[0]{\texttt{RESXSR}}
+\newcommand{\acer}[0]{\texttt{ACER}}
+\newcommand{\powr}[0]{\texttt{POWR}}
+\newcommand{\wimsr}[0]{\texttt{WIMSR}}
+\newcommand{\plotr}[0]{\texttt{PLOTR}}
+\newcommand{\viewr}[0]{\texttt{VIEWR}}
+\newcommand{\mixr}[0]{\texttt{MIXR}}
+\newcommand{\purr}[0]{\texttt{PURR}}
+\newcommand{\leapr}[0]{\texttt{LEAPR}}
+\newcommand{\gaspr}[0]{\texttt{GASPR}}
+
+% tape types
+\newcommand{\ace}[0]{\texttt{ACE}}
+\newcommand{\sixthendf}[0]{\texttt{ENDF-6}}
+\newcommand{\pendf}[0]{\texttt{PENDF}}
+\newcommand{\gendf}[0]{\texttt{GENDF}}
+\newcommand{\errorrformat}[0]{\texttt{kovarianssitiedosto}}
+\newcommand{\boxer}[0]{\texttt{BOXER}}
+
+% definitions in lab instructions
+\newcommand{\cdeg}{\textdegree C}
+\newcommand{\SHAMAN}{{\slshape SHA\-MAN\/}}
+\newcommand{\UniSampo}{{\slshape Uni\-SAM\-PO}}
+\newcommand{\UniSAMPO}{{\slshape Uni\-SAM\-PO}}
+\newcommand{\finnrepo}{TKK-F-C111}
+\newcommand{\FiR}{FiR~1}
+\newcommand{\tm}{$^\textrm{TM}$}
+\newcommand{\ubar}[1]{\underline{#1}}
+\newcommand{\tenexp}[1]{\times 10^{#1}}

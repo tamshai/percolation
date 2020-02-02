@@ -1,0 +1,73 @@
+%
+% tested with pdflatex (direct dvi -> pdf)
+%
+\documentclass[12pt,a4paper]{article}
+%
+%%%%% MAIN DEFINITIONS START - MODIFY AS NECESSARY
+
+%%% Select the language (default English):
+\def\mylang{e} % English
+%\def\mylang{f} % Finnish
+%\def\mylang{s} % Swedish
+
+\newcommand{\mycourse}{PHYS-E0412 --- Computational Physics}
+\newcommand{\mytitle}{Two-dimensional site percolation with periodic \newline boundary conditions}
+\newcommand{\mypagenum}{iv+20+IV}
+\newcommand{\mylanguage}{English}
+\newcommand{\mypubdate}{January 30, 2020}
+\newcommand{\mykeywords}{{}}
+
+\newcommand{\myauthor}{Matias Haapalehto}
+\newcommand{\mydegreeprog}{Engineering Physics and Mathematics}
+\newcommand{\mymajor}{Engineering Physics}
+\newcommand{\mymajorcode}{SCI3056}
+\newcommand{\mysupervisor}{}
+\newcommand{\myinstructor}{} % can be a list
+
+%%%%% MAIN DEFINITIONS END
+%
+\input{packages}
+\input{commands}
+%
+\begin{document}
+%
+\if\mylang f
+\selectlanguage{finnish}
+\fi
+\if\mylang s
+\selectlanguage{swedish}
+\fi
+%
+\pagenumbering{roman}
+\input{cover}
+%\clearpage
+%\setcounter{page}{2}
+%\thispagestyle{empty}
+%\input{abstract}
+%\clearpage
+%\input{tableofcontents}
+%\clearpage
+%
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\input{main}
+%
+\clearpage
+%\nocite{*}
+%\addcontentsline{toc}{section}{\numberline{}References}
+
+%%%%% If using BiBTeX, use the following two lines
+\bibliographystyle{ieeetr}%unsrt
+\bibliography{references}
+%%%%% else if using \begin{thebibliography}{9}, use the following line
+%\input{bibliography}
+%%%%% endif
+%
+\clearpage
+\appendix
+\pagenumbering{Roman}
+\setcounter{page}{1}
+%
+\input{appendixA}
+%
+\end{document}

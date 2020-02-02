@@ -2,7 +2,7 @@
 
 \section{Background}
 
-The statement of site percolation is quite simple: every site in a lattice is either occupied with a probability $p$ or not with probability $1-p$. Neighboring occupied sites are grouped into clusters. At a specific value of $p$, we can observe an interesting phenomenon: the formation of a cluster spanning the entire system. This is called percolation. In the limit of an infinite lattice, there is a finite threshold probability $p_c$ such that~\cite{Gould_2006}:
+The statement of site percolation is quite simple: every site in a lattice is either occupied with a probability $p$, or not with probability $1-p$. Neighboring occupied sites are grouped into clusters. At a specific value of $p$, we can observe an interesting phenomenon: the formation of a cluster spanning the entire system. This is called percolation. In the limit of an infinite lattice, there is a finite threshold probability $p_c$ such that~\cite{Gould_2006}:
 \begin{itemize}
 	\item for $p < p_c$ no spanning cluster exists and all clusters are finite
 	\item for $p > p_c$ a spanning cluster exists
@@ -34,12 +34,12 @@ B(N, n, p) =
 \end{align}
 Lastly, we normalize the distribution by dividing each value by the normalization constant $C = \sum_n B(N, n, p)$.
 
-One observable of interest is the probability $R_L(p)$. This is defined as the probability, for a value of $p$, that there exists a cluster wrapping completely around a square lattice of linear dimension $L$ periodic boundary conditions. There are several possible ways in which wrapping can occur, and therefore multiple definition for $R_L$~\cite{Newman_2001}:
+One observable of interest is the probability $R_L(p)$. This is defined as the probability, for a value of $p$, that there is a cluster spanning completely a square of linear dimension $L$ with periodic boundary conditions. There are several possible ways in which wrapping can occur, and therefore multiple definition for $R_L$~\cite{Newman_2001}:
 \begin{itemize}
-	\item $R_L^{(h)}$ is the probability that there exists a cluster which wraps around the horizontal direction
-	\item $R_L^{(e)}$ is the probability that there exists a cluster which wraps around either the horizontal or vertical direction, or both
-	\item $R_L^{(b)}$ is the probability that there exists a cluster which wraps around both horizontal and vertical directions
-	\item $R_L^{(1)}$ is the probability that there exists a cluster which wraps around either direction, but not both.
+	\item $R_L^{(h)}$ is the probability that the system contains a cluster which wraps around the horizontal direction
+	\item $R_L^{(e)}$ is the probability that the system contains a cluster which wraps around either the horizontal or vertical direction, or both
+	\item $R_L^{(b)}$ is the probability that the system contains a cluster which wraps around both horizontal and vertical directions
+	\item $R_L^{(1)}$ is the probability that the system contains a cluster which wraps around either direction, but not both.
 \end{itemize}
 An example of a cluster wrapping in either direction is given in~\autoref{fig:grid64}.
 

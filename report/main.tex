@@ -90,23 +90,50 @@ In order find whether a configuration has percolated, additional work must be do
 The implementation of the algorithm was done in the C language, while Python libraries were used for the plots. The Mersenne Twister was the pseudo-random number generator employed. 
 
 \section{Results from simulations}
+The number of Monte Carlo samples simulated for each value of $L$ is given in~\autoref{table:samples}.
+The results for the wrapping probabilities are given in~\autoref{fig:plot1} and results of the finite size scaling estimation are given in~\autoref{fig:plot2}. Results for the percolation threshold estimates are given in~\autoref{table:pc}. The error was estimated using the variance of the linear regression.
+
+\begin{table}[!htbp]
+	\centering
+		\begin{tabular}{ll}
+		$L$ & $n$           \\
+		32  & $10^9$        \\
+		64  & $2\cdot 10^8$ \\
+		128 & $5\cdot 10^7$ \\
+		256 & $10^7$       	
+		\end{tabular}
+	\caption{\label{table:samples} Number of simulated Monte Carlo samples $n$ for each value of the linear dimension $L$ of the square lattice}
+\end{table}
 
 \begin{figure}
 	\centering
 		\includegraphics[width=\linewidth]{../plots/plot1}
-		\caption{\label{fig:plot1} }
+		\caption{\label{fig:plot1} Plots of the wrapping probability functions $R_L(p)$ for (blue) $L=32$, (orange) $L=64$, (green) $L=128$, (red) $L=256$. The plots are zoomed on the region of critical percolation: (top left) $R_L^{(h)}$, (top right) $R_L^{(e)}$, (bottom left) $R_L^{(b)}$, (bottom right) $R_L^{(1)}$}
 \end{figure}
-
 \begin{figure}
 	\centering
-		\includegraphics[width=\linewidth]{../plots/plot2}
-		\caption{\label{fig:plot2} }
+		\includegraphics[width=0.9\linewidth]{../plots/plot2}
+		\caption{\label{fig:plot2} Finite size scaling estimate for the critical percolation threshold. The colors correspond to the various wrapping probability definitions: (orange) $R_L^{(e)}$, (blue) $R_L^{(h)}$, (green) $R_L^{(b)}$, (red) $R_L^{(1)}$}
 \end{figure}
 
+\begin{table}[!htpb]
+	\centering
+		\begin{tabular}{ll}
+		$R_L^{(h)}$ & 0.5927467(20) \\
+		$R_L^{(e)}$ & 0.5927471(24) \\
+		$R_L^{(b)}$ & 0.5927464(15) \\
+		$R_L^{(1)}$ & 0.5927493(18)
+		\end{tabular}
+	\caption{\label{table:pc} The percolation threshold determined using the different wrapping probability functions: $R_L^{(h)}$ along the horizontal axis, $R_L^{(e)}$ along either axis, $R_L^{(b)}$ along both axes, $R_L^{(1)}$ along a single axis. }
+\end{table}
+
+
 \section{Conclusions and thoughts on further studies}
-- more samples to get an accurate $p_c$, but the computation duration already was in the order of 10 hours
-- without multi-threading and optimization, the computation would take weeks or months
-- still an accurate value for the percolation threshold
+Despite its simplicity, the percolation problem displays many interesting properties, such as phase transition at the percolation threshold. We simulated finite lattices using the Newman-Ziff algorithm, which is efficient way to solve the problem. Finally, we estimated the value of the percolation threshold using finite size scaling. 
+
+In the finite size estimation, we can see that the fit was quite poor due to the variance in the results. This is due to the lack of Monte Carlo samples, the number of which was heavily constrained by the time required to compute the simulation. A computation with more samples would yield an increased accuracy for the percolation threshold $p_c$. However, the computation duration was already in the order of tens of hours. Without parallelization and/or optimization, reproducing the results in~\cite{Newman_2001} would take weeks or months. Still, our results are in reasonable agreement with the state-of-the-art, and we can conclude that this is an excellent method to estimate the percolation threshold. 
+
+Aside running the simulation longer, other interesting paths to take would be to simulate the system in higher dimensions, or on a different kind of lattice, such as a triangular lattice. A simulation in a continuum instead of a regular lattice would be interesting as well.
 
 
 

@@ -87,7 +87,7 @@ This type of algorithm is called \emph{weighted union–find with path compressi
 
 In order find whether a configuration has percolated, additional work must be done. We add variables to each node which store the displacement to the parent node in both coordinates. Now the total displacement to the root node can be computed by traversing the tree and adding the displacements together. When a bond is added joining two sites $i$ and $j$ that are members of the same cluster, there are two paths from $i$ to the root node. One that goes through the parent of $i$ and another that consists of hopping to $j$ and then going through $j$'s parents. We sum the displacements along both of these paths, and percolation has occurred if the difference in displacement is equal to $\pm L$ in either of the coordinates~\cite{Mertens_2012}. 
 
-The implementation of the algorithm was done in the C language, while Python libraries were used for the plots. The Mersenne Twister was the pseudo-random number generator employed. 
+The implementation of the algorithm was done in the C language, while Python libraries were used for the plots. The Mersenne Twister was the pseudo-random number generator employed. The program was tested with the value of $L=2$, since the case is easy to solve exactly.
 
 \section{Results from simulations}
 The number of Monte Carlo samples simulated for each value of $L$ is given in~\autoref{table:samples}.
